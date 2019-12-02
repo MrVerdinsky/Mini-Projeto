@@ -16,20 +16,19 @@
 /* Use puts() to print constant strings */
 
 
-int rand_number(const int, const int);
 void print_status(int level, int score, int plays);
 void print_menu(void);
-int rand_number(const int min, const int max);
-
+int rand_number( int *min, int *max, int *level);
+void level_up(int *l);
 
 
 int main(int argc, char **argv)
 {	
-	
-	char player_command;
 	int level = 1;
 	int score = 0;
 	int plays = 0;
+	char player_command;
+	int min, max;
 	puts(MSG_WELCOME);
     print_menu();
 	
@@ -54,7 +53,8 @@ int main(int argc, char **argv)
 		switch (player_command)
         {
             case 'p':
-				
+				puts(MSG_SORT);
+				rand_number(&min, &max, &level);
                 break;
 
             case 'q':
@@ -106,24 +106,78 @@ void print_status(int level, int score, int plays)
 
 
 /* generate a random integer between min and max */
-int rand_number(const int min, const int max)
+int rand_number( int *min, int *max, int *level)
 {
 	int i;
-	if (max < min)
+
+/* Changes the min & max variables according to level */
+	
+	if (*level == 1)
+	{
+		*min = 0;
+		*max = 10;
+	}
+
+	else if (*level == 2)
+	{
+		*min = 0;
+		*max = 30;
+	}
+
+	else if (*level == 3)
+	{
+		*min = -50;
+		*max = 30;
+	}
+
+	else if (*level == 4)
+	{
+		*min = -100;
+		*max = 0;
+	}
+
+	else
+	{
+		*min = -200;
+		*max = -100;
+	}
+
+	if (*max < *min)
 	{
 		puts("Max must be larger than Min");
 		exit(0);
 	}
-	
+
+/* Block of code that prints the array of numbers for that level */
+
 	int number;
-	int n = abs(max - min) + 1;
-	for ( i = 0 ; i < 3; i++)
+	int n = abs(*max - *min) + 1;
+	for ( i = 0 ; i < 4; i++)
 	{
-		number = ((rand() % n) + min);
-		printf("%d, " , number);
+		number = ((rand() % n) + *min);
+		if ( i == 3)
+		{
+			printf("%d", number);
+		}
+		else
+		{
+			printf("%d, " , number);
+		}
 	}
+	printf("\n");
 	return 0;
 
 }
 
-/* Game Starts */
+/* Function for Leveling Up */
+void level_up(int *l)
+{
+	int score = 0;
+	for (score = 0; score > *l*10; score += 5)
+	{
+		*l += 1;
+	}
+}
+
+/*Function for Game Over */
+void Game
