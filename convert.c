@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <time.h>
 
 #define MSG_WELCOME "WELCOME TO SORTIFY!"
 #define MSG_SORT "Sort the following numbers:"
@@ -12,20 +13,33 @@
 #define MSG_MAX "You have reached the maximum number of moves."
 #define MSG_BYE "Bye."
 #define MSG_UNKNOWN "Unknown option."
+/* Use puts() to print constant strings */
 
 int rand_number(const int, const int);
-void print_status(const int, const int, const int);
+void print_status( int, int, int);
 void print_menu(void);
 void player_options(char);
+int rand_number(const int min, const int max);
 
 
 
-int main()
+
+int main(int argc, char **argv)
 {
 
 	puts(MSG_WELCOME);
     print_menu();
-	return 0;
+	int seed;
+	int level = 1, score = 0, plays = 0;
+	char player_command;
+	if (argc > 1)
+	{
+		seed = atoi(argv[1]);
+	}
+	else
+	{
+		seed = time(NULL);
+	}
 }
 
 /*Function to print Menu*/
@@ -50,19 +64,19 @@ void player_options(char player_command)
 		switch (player_command)
         {
             case 'p':
-            
+				rand_number(0, 10);
                 break;
 
             case 'q':
-                printf("Bye\n");
+                puts(MSG_BYE);
                 break;
             
-            case 'b':
-                
+            case 'm':
+                print_menu();
                 break;
 
             case 's':
-        
+                print_status(const int level, const int score, const int plays);
                 break;
 
             default:
@@ -72,6 +86,39 @@ void player_options(char player_command)
 
     }
     while (player_command != 'q');
-            return 0;
     
+    
+}
+
+/* Function to print game status*/
+void print_status( int level,  int score,  int plays)
+{ 
+	puts("+-----------------------------+");
+	printf("| level:  %02d                  |\n", level);
+	printf("| points: %02d                  |\n", score);
+	printf("| plays:  %02d                  |\n", plays);
+	puts("+-----------------------------+");
+}
+
+
+
+/* generate a random integer between min and max */
+int rand_number(const int min, const int max)
+{
+	int i;
+	if (max < min)
+	{
+		puts("Max must be larger than Min");
+		exit(0);
+	}
+	
+	int number;
+	int n = abs(max - min) + 1;
+	for ( i = 0 ; i < 4; i++)
+	{
+		number = ((rand() % n) + min);
+		printf("%d, " , number);
+	}
+	return 0;
+
 }
