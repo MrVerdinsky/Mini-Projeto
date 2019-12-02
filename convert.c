@@ -15,31 +15,67 @@
 #define MSG_UNKNOWN "Unknown option."
 /* Use puts() to print constant strings */
 
+
 int rand_number(const int, const int);
-void print_status( int, int, int);
+void print_status(int level, int score, int plays);
 void print_menu(void);
-void player_options(char);
 int rand_number(const int min, const int max);
 
 
 
-
 int main(int argc, char **argv)
-{
-
+{	
+	
+	char player_command;
+	int level = 1;
+	int score = 0;
+	int plays = 0;
 	puts(MSG_WELCOME);
     print_menu();
+	
+	/* Define rand function's seed */
+
 	int seed;
-	int level = 1, score = 0, plays = 0;
-	char player_command;
-	if (argc > 1)
+	if (argc >= 2)
 	{
 		seed = atoi(argv[1]);
+		srand(seed);
 	}
 	else
 	{
-		seed = time(NULL);
+		srand(time(0)); 
 	}
+	
+	/* All of the players commands */
+	
+	do
+    {
+        scanf(" %c", &player_command);
+		switch (player_command)
+        {
+            case 'p':
+				
+                break;
+
+            case 'q':
+                puts(MSG_BYE);
+                break;
+            
+            case 'm':
+                print_menu();
+                break;
+
+            case 's':
+            	print_status(level, score, plays);
+                break;
+
+            default:
+                printf("Unknown option\n");
+                break;
+        }
+
+    }
+    while (player_command != 'q');
 }
 
 /*Function to print Menu*/
@@ -55,43 +91,10 @@ void print_menu(void)
 	puts("+-----------------------------+");
 }
 
-/*Fucntion for Player Commands*/
-void player_options(char player_command)
-{
-    do
-    {
-        scanf(" %c", &player_command);
-		switch (player_command)
-        {
-            case 'p':
-				rand_number(0, 10);
-                break;
 
-            case 'q':
-                puts(MSG_BYE);
-                break;
-            
-            case 'm':
-                print_menu();
-                break;
-
-            case 's':
-                print_status(const int level, const int score, const int plays);
-                break;
-
-            default:
-                printf("Unknown option\n");
-                break;
-        }
-
-    }
-    while (player_command != 'q');
-    
-    
-}
 
 /* Function to print game status*/
-void print_status( int level,  int score,  int plays)
+void print_status(int level, int score, int plays)
 { 
 	puts("+-----------------------------+");
 	printf("| level:  %02d                  |\n", level);
@@ -114,7 +117,7 @@ int rand_number(const int min, const int max)
 	
 	int number;
 	int n = abs(max - min) + 1;
-	for ( i = 0 ; i < 4; i++)
+	for ( i = 0 ; i < 3; i++)
 	{
 		number = ((rand() % n) + min);
 		printf("%d, " , number);
@@ -122,3 +125,5 @@ int rand_number(const int min, const int max)
 	return 0;
 
 }
+
+/* Game Starts */
