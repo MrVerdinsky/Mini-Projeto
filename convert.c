@@ -114,7 +114,7 @@ int rand_number(const int min, const int max)
 	
 	int number,sorted,maior;
 	int n = abs(max - min) + 1;
-    int numberlist[4]={0},numberinput[4]={0},numberlistaux[4]={0}; /*new*/
+    int numberlist[4]={0},numberinput[4]={0}; /*new*/
 	for ( i = 0 ; i < 3; i++)
 	{
 		number = ((rand() % n) + min);
@@ -143,9 +143,21 @@ int rand_number(const int min, const int max)
         }
     }
 
+    sorted=1;
 
+    for (i=0;i<4;i++)
+    {
+            if (numberlist[i]!=numberinput[i])
+            {
+                sorted=0;
+                puts(MSG_WELL);
+            }
+    }
 
-
+    if (sorted==1)
+    {
+        puts(MSG_WRONG);
+    }
 
 	return 0;
 
