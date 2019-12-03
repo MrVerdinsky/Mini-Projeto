@@ -150,17 +150,15 @@ int rand_number(const int min, const int max)
             if (numberlist[i]!=numberinput[i])
             {
                 sorted=0;
-                puts(MSG_WELL);
+                puts(MSG_WRONG);
             }
     }
 
     if (sorted==1)
     {
-        puts(MSG_WRONG);
+        puts(MSG_WELL);
     }
 
 	return 0;
 
 }
-
-int 
