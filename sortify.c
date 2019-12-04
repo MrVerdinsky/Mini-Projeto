@@ -19,7 +19,6 @@ int rand_number(const int, const int);
 void print_status(const int, const int, const int);
 void print_menu(void);
 int game(int *, int *, int *);
-void sorter(int *);
 
 
 int main(int argc, char **argv)
@@ -138,10 +137,27 @@ int game(int * nivel, int * pontuacao, int * jogadas)
 	
 	/*implementa função que organiza o vetor*/
 	int sortedlist[4];
-	sortedlist[4] = unsortedlist[4];
-	sorter(sortedlist);
-	for (int i = 0; i < 4; i++){printf("%d ", *(sortedlist+i));}
-	printf("\n");
+	for (int i = 0; i < 4; i++)
+	{
+		sortedlist[i] = unsortedlist[i];
+	}
+	int maior = 0;
+	int sorted = 0;
+	while (sorted!=1)
+    {
+        sorted=1;
+        for(int i=0;i<=2;i++)
+        {
+            if (sortedlist[i]>sortedlist[i+1])
+            {
+                maior = sortedlist[i];
+                sortedlist[i]=sortedlist[i+1];
+                sortedlist[i+1]=maior;
+                sorted = 0;
+            }
+        }
+    }
+	printf("%d %d %d %d \n", sortedlist[0], sortedlist[1], sortedlist[2], sortedlist[3]);
 
 	/*checks if the numbers in the input are the same of the pc*/
 	int check;
@@ -175,26 +191,7 @@ int game(int * nivel, int * pontuacao, int * jogadas)
 	return 0;
 }
 
-/*sorts the numbers in the vector*/
-void sorter(int list[])
-{
-	int maior = 0;
-	int sorted = 0;
-	while (sorted!=1)
-    {
-        sorted=1;
-        for(int i=0;i<=2;i++)
-        {
-            if (list[i]>list[i+1])
-            {
-                maior = list[i];
-                list[i]=list[i+1];
-                list[i+1]=maior;
-                sorted = 0;
-            }
-        }
-    }
-}
+
 
 /* generate a random integer between min and max */
 int rand_number(const int min, const int max)
