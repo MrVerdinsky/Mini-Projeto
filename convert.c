@@ -16,55 +16,47 @@
 /* Use puts() to print constant strings */
 
 int rand_number(const int, const int);
-void print_status( int, int, int);
+void print_status(const int, const int, const int);
 void print_menu(void);
-void player_options(char);
-int rand_number(const int min, const int max);
-
-
+int game(int *, int *, int *);
 
 
 int main(int argc, char **argv)
 {
-
-	puts(MSG_WELCOME);
-    print_menu();
 	int seed;
 	int level = 1, score = 0, plays = 0;
 	char player_command;
+	
+	puts(MSG_WELCOME);
+	print_menu();
+
+
 	if (argc > 1)
 	{
 		seed = atoi(argv[1]);
+		srand(seed);
 	}
 	else
 	{
 		seed = time(NULL);
+		srand(seed);
 	}
-}
-
-/*Function to print Menu*/
-
-void print_menu(void)
-{
-	puts("+-----------------------------+");
-	puts("| SORTIFY                     |");
-	puts("| p - next chalenge           |");
-	puts("| q - quit                    |");
-	puts("| m - print this information  |");
-	puts("| s - show your status        |");
-	puts("+-----------------------------+");
-}
-
-/*Fucntion for Player Commands*/
-void player_options(char player_command)
-{
-    do
+	
+	if (plays == 5)
+	{
+		puts(MSG_MAX);
+		print_status(level, score, plays);
+		puts(MSG_OVER);
+		return 0;
+	}
+	
+	do
     {
         scanf(" %c", &player_command);
 		switch (player_command)
         {
             case 'p':
-                
+				game(&level, &score, &plays);
                 break;
 
             case 'q':
@@ -76,7 +68,7 @@ void player_options(char player_command)
                 break;
 
             case 's':
-                print_status(const int level, const int score, const int plays);
+				print_status(level, score, plays);
                 break;
 
             default:
@@ -86,13 +78,157 @@ void player_options(char player_command)
 
     }
     while (player_command != 'q');
-    
-    
+	return 0;
 }
 
-/* Function to print game status*/
-void print_status( int level,  int score,  int plays)
-{ 
+/*game it self*/
+int game(int * nivel, int * pontuacao, int * jogadas)
+{
+	int number, min, max;
+
+	/*prints */
+	puts(MSG_SORT);
+
+	/*defines the min and max value for the random function*/
+	switch (*nivel)
+	{
+		case 1:
+			min = 0;
+			max = 10;
+			break;
+		case 2:
+			min = 0;
+			max = 30;
+			break;
+		case 3:
+			min = -50;
+			max = 30;
+			break;
+		case 4:
+			min = -100;
+			max = 0;
+			break;
+		case 5:
+			min = -200;
+			max = -100;
+			break;
+		default:
+			break;
+	} 
+	
+	/*cicle that generates 4 random numbers*/
+	int unsortedlist[4];
+	for (int i = 0; i < 4; i++)
+	{
+		number = (rand_number(min, max));
+		if ( i == 3)
+		{
+			printf("%d", number);
+		}
+		else
+		{
+			printf("%d, " , number);
+		}
+        unsortedlist[i]=number;
+	}
+	printf("\n");
+	
+	/*função que me devolve o input do player*/
+	int playerinput[4], num;
+	for(int i = 0; i < 4; i++)
+	{
+		scanf(" %d", &num);
+		*(playerinput+i) = num;
+	}
+	*jogadas += 1;
+	if (*jogadas == 5)
+	{
+		puts(MSG_MAX);
+		print_status( *nivel, *pontuacao, *jogadas);
+		puts(MSG_OVER);
+		return 0;
+	}
+	/*implementa função que organiza o vetor*/
+	int sortedlist[4];
+	for (int i = 0; i < 4; i++)
+	{
+		sortedlist[i] = unsortedlist[i];
+	}
+	int maior = 0;
+	int sorted = 0;
+	while (sorted!=1)
+    {
+        sorted=1;
+        for(int i=0;i<=2;i++)
+        {
+            if (sortedlist[i]>sortedlist[i+1])
+            {
+                maior = sortedlist[i];
+                sortedlist[i]=sortedlist[i+1];
+                sortedlist[i+1]=maior;
+                sorted = 0;
+            }
+        }
+    }
+
+	/*checks if the numbers in the input are the same of the pc*/
+	for (int i = 0; i < 4; i++)
+	{
+		if (sortedlist[i] != playerinput[i])
+		{
+			puts(MSG_SORT2);
+			for(int i = 0; i < 4; i++)
+			{
+				scanf(" %d", &num);
+				*(playerinput+i) = num;
+			}
+			*jogadas += 1;			
+			for (int i = 0; i < 4; i++)
+			{
+				if (sortedlist[i] != playerinput[i])
+				{
+					puts(MSG_WRONG);
+					break;				
+				}			
+			}
+			break;
+		}
+		else
+		{
+			puts(MSG_WELL);
+			*pontuacao += 5;
+			if (*pontuacao % 10 == 0)
+			{
+				*nivel += 1;
+				if (*nivel == 6)
+				{
+					puts(MSG_WIN);
+					break;
+				}
+			}
+			break;
+		}
+	}
+	return 0;
+}
+
+
+
+/* generate a random integer between min and max */
+int rand_number(const int min, const int max)
+{
+	if (max < min)
+	{
+		puts("Max must be larger than Min");
+		exit(0);
+	}
+	int n = abs(max - min) + 1;
+	return (rand() % n) + min;
+}
+
+/* print the game status */
+void print_status(const int level, const int score, const int plays)
+{
 	puts("+-----------------------------+");
 	printf("| level:  %02d                  |\n", level);
 	printf("| points: %02d                  |\n", score);
@@ -100,65 +236,14 @@ void print_status( int level,  int score,  int plays)
 	puts("+-----------------------------+");
 }
 
-
-
-/* generate a random integer between min and max and saves it in an array */
-int rand_number(const int min, const int max)
+/* print the option menu */
+void print_menu(void)
 {
-	int i,j,k,num1,num2,num3,num4;
-	if (max < min)
-	{
-		puts("Max must be larger than Min");
-		exit(0);
-	}
-	
-	int number,sorted,maior;
-	int n = abs(max - min) + 1;
-    int numberlist[4]={0},numberinput[4]={0}; /*new*/
-	for ( i = 0 ; i < 3; i++)
-	{
-		number = ((rand() % n) + min);
-        numberlist[i]=number; /*new*/
-		printf("%d, " , number);
-    
-	}    
-
-    scanf("%d %d %d %d",&num1,&num2,&num3,&num4);
-
-    numberinput[4]={num1,num2,num3,num4};
-
-/*Orders the list generated by ascending order */
-    while (sorted!=1)
-    {
-        sorted=1;
-        for(i=0;i<=2;i++)
-        {
-            if (numberlist[i]>numberlist[i+1])
-            {
-                maior = numberlist[i];
-                numberlist[i]=numberlist[i+1];
-                numberlist[i+1]=maior;
-                sorted = 0;
-            }
-        }
-    }
-
-    sorted=1;
-
-    for (i=0;i<4;i++)
-    {
-            if (numberlist[i]!=numberinput[i])
-            {
-                sorted=0;
-                puts(MSG_WRONG);
-            }
-    }
-
-    if (sorted==1)
-    {
-        puts(MSG_WELL);
-    }
-
-	return 0;
-
+	puts("+------------------------------+");
+	puts("| SORTIFY                      |");
+	puts("| p - next chalenge            |");
+	puts("| q - quit                     |");
+	puts("| m - print this information   |");
+	puts("| s - show your status         |");
+	puts("+------------------------------+");
 }
