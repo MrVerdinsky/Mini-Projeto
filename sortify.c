@@ -133,6 +133,7 @@ int game(int * nivel, int * pontuacao, int * jogadas)
 		scanf(" %d", &num);
 		*(playerinput+i) = num;
 	}
+	*jogadas += 1; 
 	printf("%d %d %d %d \n", playerinput[0],playerinput[1], playerinput[2], playerinput[3]);
 	
 	/*implementa função que organiza o vetor*/
@@ -160,22 +161,23 @@ int game(int * nivel, int * pontuacao, int * jogadas)
 	printf("%d %d %d %d \n", sortedlist[0], sortedlist[1], sortedlist[2], sortedlist[3]);
 
 	/*checks if the numbers in the input are the same of the pc*/
-	int check;
-	for (int i=0;i<4;i++)
-    {
-		for(int j = 0; j < 4; j++)
+	int check = 0;
+	for (int i = 0; i < 4; i++)
+	{
+		if (sortedlist[i] != playerinput[i])
 		{
-			if (sortedlist[i] != playerinput[j])
-			{
-				check+=1;
-			}
+			check +=1;
 		}
 	}
-	if (check>=4)
+	if (check != 0)
 	{
-
+		puts(MSG_SORT2);
 	}
-	break;
+	else
+	{
+		puts(MSG_WELL);
+	}
+	
 
 	*pontuacao += 5;
 	if (*pontuacao % 10 == 0)
@@ -186,7 +188,6 @@ int game(int * nivel, int * pontuacao, int * jogadas)
 			//end game and you win
 		}
 	}
-	*jogadas +=1;
 
 	return 0;
 }
@@ -204,7 +205,6 @@ int rand_number(const int min, const int max)
 	int n = abs(max - min) + 1;
 	return (rand() % n) + min;
 }
-
 
 /* print the game status */
 void print_status(const int level, const int score, const int plays)
