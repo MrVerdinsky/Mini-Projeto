@@ -42,6 +42,13 @@ int main(int argc, char **argv)
 		srand(seed);
 	}
 	
+	if (plays == 5)
+	{
+		puts(MSG_MAX);
+		print_status(level, score, plays);
+		puts(MSG_OVER);
+		return 0;
+	}
 	
 	do
     {
@@ -108,7 +115,7 @@ int game(int * nivel, int * pontuacao, int * jogadas)
 		default:
 			break;
 	} 
-
+	
 	/*cicle that generates 4 random numbers*/
 	int unsortedlist[4];
 	for (int i = 0; i < 4; i++)
@@ -133,9 +140,14 @@ int game(int * nivel, int * pontuacao, int * jogadas)
 		scanf(" %d", &num);
 		*(playerinput+i) = num;
 	}
-	*jogadas += 1; 
-	printf("%d %d %d %d \n", playerinput[0],playerinput[1], playerinput[2], playerinput[3]);
-	
+	*jogadas += 1;
+	if (*jogadas == 4)
+	{
+		puts(MSG_MAX);
+		print_status( *nivel, *pontuacao, *jogadas);
+		puts(MSG_OVER);
+		return 0;
+	}
 	/*implementa função que organiza o vetor*/
 	int sortedlist[4];
 	for (int i = 0; i < 4; i++)
@@ -158,37 +170,61 @@ int game(int * nivel, int * pontuacao, int * jogadas)
             }
         }
     }
-	printf("%d %d %d %d \n", sortedlist[0], sortedlist[1], sortedlist[2], sortedlist[3]);
 
 	/*checks if the numbers in the input are the same of the pc*/
-	int check = 0;
 	for (int i = 0; i < 4; i++)
 	{
 		if (sortedlist[i] != playerinput[i])
 		{
-			check +=1;
+			puts(MSG_SORT2);
+			for(int i = 0; i < 4; i++)
+			{
+				scanf(" %d", &num);
+				*(playerinput+i) = num;
+			}
+			*jogadas += 1;			
+			for (int i = 0; i < 4; i++)
+			{
+				if (sortedlist[i] != playerinput[i])
+				{
+					puts(MSG_WRONG);
+					break;				
+				}
+				else
+				{
+					puts(MSG_WELL);
+					*pontuacao += 5;
+					if (*pontuacao % 10 == 0)
+					{
+						*nivel += 1;
+						if (*nivel == 6)
+						{
+							puts(MSG_WIN);
+							break;
+						}
+					}
+					break;
+				}
+				
+			}
+			break;
 		}
-	}
-	if (check != 0)
-	{
-		puts(MSG_SORT2);
-	}
-	else
-	{
-		puts(MSG_WELL);
-	}
-	
-
-	*pontuacao += 5;
-	if (*pontuacao % 10 == 0)
-	{
-		*nivel += 1;
-		if (*nivel == 6)
+		else
 		{
-			//end game and you win
+			puts(MSG_WELL);
+			*pontuacao += 5;
+			if (*pontuacao % 10 == 0)
+			{
+				*nivel += 1;
+				if (*nivel == 6)
+				{
+					puts(MSG_WIN);
+					break;
+				}
+			}
+			break;
 		}
 	}
-
 	return 0;
 }
 
