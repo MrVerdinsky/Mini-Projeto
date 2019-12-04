@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <time.h>
 
 #define MSG_WELCOME "WELCOME TO SORTIFY!"
 #define MSG_SORT "Sort the following numbers:"
@@ -17,14 +18,185 @@
 int rand_number(const int, const int);
 void print_status(const int, const int, const int);
 void print_menu(void);
+int game(int *, int *, int *);
+void sorter(int *);
+int playerInput(void);
 
 
-int main()
+int main(int argc, char **argv)
 {
-/
+	int seed;
+	int level = 1, score = 0, plays = 0;
+	char player_command;
+	
 	puts(MSG_WELCOME);
+	print_menu();
+
+
+	if (argc > 1)
+	{
+		seed = atoi(argv[1]);
+		srand(seed);
+	}
+	else
+	{
+		seed = time(NULL);
+		srand(seed);
+	}
+	
+	
+	do
+    {
+        scanf(" %c", &player_command);
+		switch (player_command)
+        {
+            case 'p':
+				game(&level, &score, &plays);
+                break;
+
+            case 'q':
+                puts(MSG_BYE);
+                break;
+            
+            case 'm':
+                print_menu();
+                break;
+
+            case 's':
+				print_status(level, score, plays);
+                break;
+
+            default:
+                printf("Unknown option\n");
+                break;
+        }
+
+    }
+    while (player_command != 'q');
+	return 0;
+}
+
+/*game it self*/
+int game(int * nivel, int * pontuacao, int * jogadas)
+{
+	int number, min, max;
+
+	/*prints */
+	puts(MSG_SORT);
+
+	/*defines the min and max value for the random function*/
+	switch (*nivel)
+	{
+		case 1:
+			min = 0;
+			max = 10;
+			break;
+		case 2:
+			min = 0;
+			max = 30;
+			break;
+		case 3:
+			min = -50;
+			max = 30;
+			break;
+		case 4:
+			min = -100;
+			max = 0;
+			break;
+		case 5:
+			min = -200;
+			max = -100;
+			break;
+		default:
+			break;
+	} 
+
+	/*cicle that generates 4 random numbers*/
+	int unsortedlist[4];
+	for (int i = 0; i < 4; i++)
+	{
+		number = (rand_number(min, max));
+		if ( i == 3)
+		{
+			printf("%d", number);
+		}
+		else
+		{
+			printf("%d, " , number);
+		}
+        unsortedlist[i]=number;
+	}
+	printf("\n");
+	
+	/*função que me devolve o input do player*/
+	int playerinput[4];
+	playerinput[4] = playerInput();
+	
+	/*implementa função que organiza o vetor*/
+	int sortedlist[4];
+	sortedlist[4] = unsortedlist[4];
+	sorter(sortedlist);
+
+	/*checks if the numbers in the input are the same of the pc*/
+	int check;
+	for (int i=0;i<4;i++)
+    {
+		for(int j = 0; j < 4; j++)
+		{
+			if (sortedlist[i] != playerinput[j])
+			{
+				check+=1;
+			}
+		}
+		if (check==4)
+		{
+
+		}
+		break;
+    }
+
+	*pontuacao += 5;
+	if (*pontuacao % 10 == 0)
+	{
+		*nivel += 1;
+		if (*nivel == 6)
+		{
+			//end game and you win
+		}
+	}
+	*jogadas +=1;
 
 	return 0;
+}
+
+/*sorts the numbers in the vector*/
+void sorter(int list[4])
+{
+	int maior = 0;
+	int sorted = 0;
+	while (sorted!=1)
+    {
+        sorted=1;
+        for(int i=0;i<=2;i++)
+        {
+            if (list[i]>list[i+1])
+            {
+                maior = list[i];
+                list[i]=list[i+1];
+                list[i+1]=maior;
+                sorted = 0;
+            }
+        }
+    }
+}
+
+/* registers the user input and saves it in a vector*/
+int playerInput(void)
+{
+	int num1, num2, num3, num4;
+	scanf("%d %d %d %d", &num1, &num2, &num3, &num4);
+    int input[4] = {num1,num2, num3, num4};
+	return *input;
 }
 
 /* generate a random integer between min and max */
@@ -39,6 +211,7 @@ int rand_number(const int min, const int max)
 	return (rand() % n) + min;
 }
 
+
 /* print the game status */
 void print_status(const int level, const int score, const int plays)
 {
@@ -52,11 +225,11 @@ void print_status(const int level, const int score, const int plays)
 /* print the option menu */
 void print_menu(void)
 {
-	puts("+-----------------------------+");
-	puts("| SORTIFY                     |");
-	puts("| p - next chalenge           |");
-	puts("| q - quit                    |");
-	puts("| m - print this information  |");
-	puts("| s - show your status        |");
-	puts("+-----------------------------+");
+	puts("+------------------------------+");
+	puts("| SORTIFY                      |");
+	puts("| p - next chalenge            |");
+	puts("| q - quit                     |");
+	puts("| m - print this information   |");
+	puts("| s - show your status         |");
+	puts("+------------------------------+");
 }
