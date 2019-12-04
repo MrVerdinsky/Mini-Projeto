@@ -20,7 +20,6 @@ void print_status(const int, const int, const int);
 void print_menu(void);
 int game(int *, int *, int *);
 void sorter(int *);
-int playerInput(void);
 
 
 int main(int argc, char **argv)
@@ -129,13 +128,20 @@ int game(int * nivel, int * pontuacao, int * jogadas)
 	printf("\n");
 	
 	/*função que me devolve o input do player*/
-	int playerinput[4];
-	playerinput[4] = playerInput();
+	int playerinput[4], num;
+	for(int i = 0; i < 4; i++)
+	{
+		scanf(" %d", &num);
+		*(playerinput+i) = num;
+	}
+	printf("%d %d %d %d \n", playerinput[0],playerinput[1], playerinput[2], playerinput[3]);
 	
 	/*implementa função que organiza o vetor*/
 	int sortedlist[4];
 	sortedlist[4] = unsortedlist[4];
 	sorter(sortedlist);
+	for (int i = 0; i < 4; i++){printf("%d ", *(sortedlist+i));}
+	printf("\n");
 
 	/*checks if the numbers in the input are the same of the pc*/
 	int check;
@@ -170,7 +176,7 @@ int game(int * nivel, int * pontuacao, int * jogadas)
 }
 
 /*sorts the numbers in the vector*/
-void sorter(int list[4])
+void sorter(int list[])
 {
 	int maior = 0;
 	int sorted = 0;
@@ -188,15 +194,6 @@ void sorter(int list[4])
             }
         }
     }
-}
-
-/* registers the user input and saves it in a vector*/
-int playerInput(void)
-{
-	int num1, num2, num3, num4;
-	scanf("%d %d %d %d", &num1, &num2, &num3, &num4);
-    int input[4] = {num1,num2, num3, num4};
-	return *input;
 }
 
 /* generate a random integer between min and max */
