@@ -141,7 +141,7 @@ int game(int * nivel, int * pontuacao, int * jogadas)
 		*(playerinput+i) = num;
 	}
 	*jogadas += 1;
-	if (*jogadas == 5)
+	if (*jogadas == 30)
 	{
 		puts(MSG_MAX);
 		print_status( *nivel, *pontuacao, *jogadas);
@@ -171,44 +171,60 @@ int game(int * nivel, int * pontuacao, int * jogadas)
         }
     }
 
+    int i,j,k,check=0,different_num;
+
 	/*checks if the numbers in the input are the same of the pc*/
-	for (int i = 0; i < 4; i++)
+	for (i = 0; i < 4; i++)
 	{
-		if (sortedlist[i] != playerinput[i])
-		{
-			puts(MSG_SORT2);
-			for(int i = 0; i < 4; i++)
-			{
-				scanf(" %d", &num);
-				*(playerinput+i) = num;
-			}
-			*jogadas += 1;			
-			for (int i = 0; i < 4; i++)
-			{
-				if (sortedlist[i] != playerinput[i])
-				{
-					puts(MSG_WRONG);
-					break;				
-				}			
-			}
-			break;
-		}
-		else
-		{
-			puts(MSG_WELL);
-			*pontuacao += 5;
+        if (sortedlist[i]==playerinput[i])
+        {
+            check+=1;
+        }
+    }
+
+    if (check==4)
+    {
+        puts(MSG_WELL);
+        *pontuacao += 5;
 			if (*pontuacao % 10 == 0)
 			{
 				*nivel += 1;
 				if (*nivel == 6)
 				{
 					puts(MSG_WIN);
-					break;
+                    /*sai do jogo*/
 				}
 			}
-			break;
-		}
-	}
+    }
+    else
+    {
+        for (i=0;i<4;i++)
+        {
+            different_num=0;
+            
+            for (j=0;j<4;j++)
+            {
+               if (playerinput[j]!=sortedlist[i])
+               {
+                   different_num+=1;
+               }
+           }
+           /*One of the numbers is not on the list*/
+           if (different_num==4)
+           {
+                puts(MSG_SORT2);
+                /*Nao esta completo ainda*/
+                break;
+           }
+           /*The numbers are not ordered correctly*/
+           if (i==3)
+           {
+               puts(MSG_WRONG);
+           }
+        }
+        
+    }
+    
 	return 0;
 }
 
