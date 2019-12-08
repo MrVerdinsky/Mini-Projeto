@@ -42,24 +42,19 @@ int main(int argc, char **argv)
 		srand(seed);
 	}
 	
-	if (plays == 5)
-	{
-		puts(MSG_MAX);
-		print_status(level, score, plays);
-		puts(MSG_OVER);
-		return 0;
-	}
 	
 	do
     {
         scanf(" %c", &player_command);
 		switch (player_command)
         {
+            
             case 'p':
 				game(&level, &score, &plays);
                 break;
 
             case 'q':
+				print_status(level, score, plays);
                 puts(MSG_BYE);
                 break;
             
@@ -72,9 +67,21 @@ int main(int argc, char **argv)
                 break;
 
             default:
-                printf("Unknown option\n");
+                puts(MSG_UNKNOWN);
                 break;
         }
+        
+        if (plays == 30)
+        {
+            return 0;
+        }
+
+		if (level==6)
+		{
+			print_status(level, score, plays);
+			puts(MSG_OVER);
+			return 0;
+		}
 
     }
     while (player_command != 'q');
@@ -141,13 +148,7 @@ int game(int * nivel, int * pontuacao, int * jogadas)
 		*(playerinput+i) = num;
 	}
 	*jogadas += 1;
-	if (*jogadas == 30)
-	{
-		puts(MSG_MAX);
-		print_status( *nivel, *pontuacao, *jogadas);
-		puts(MSG_OVER);
-		return 0;
-	}
+	
 	/*implementa função que organiza o vetor*/
 	int sortedlist[4];
 	for (int i = 0; i < 4; i++)
@@ -171,7 +172,7 @@ int game(int * nivel, int * pontuacao, int * jogadas)
         }
     }
 
-    int i,j,k,check=0,different_num;
+    int i,j,check=0,different_num;
 
 	/*checks if the numbers in the input are the same of the pc*/
 	for (i = 0; i < 4; i++)
@@ -192,7 +193,7 @@ int game(int * nivel, int * pontuacao, int * jogadas)
 				if (*nivel == 6)
 				{
 					puts(MSG_WIN);
-                    /*sai do jogo*/
+                    return 0;
 				}
 			}
     }
@@ -212,10 +213,59 @@ int game(int * nivel, int * pontuacao, int * jogadas)
            /*One of the numbers is not on the list*/
            if (different_num==4)
            {
-                puts(MSG_SORT2);
-                /*Nao esta completo ainda*/
-                break;
-           }
+			   	int k,l;
+			   	while (different_num ==4)
+				{	
+					puts(MSG_SORT2);
+					for(int k = 0; k < 4; k++)
+					{
+						scanf(" %d", &num);
+						*(playerinput+k) = num;
+					}
+
+					for (k=0;k<4;k++)
+					{
+						different_num=0;
+							
+						for (l=0;l<4;l++)
+						{
+							if (playerinput[l]!=sortedlist[k])
+							{
+								different_num+=1;
+							}
+						}					
+					}   
+           		}
+
+				check=0;
+
+				for (i = 0; i < 4; i++)
+				{
+					if (sortedlist[i]==playerinput[i])
+					{
+						check+=1;
+					}
+				}
+
+				if (check==4)
+				{
+					puts(MSG_WELL);
+					*pontuacao += 5;
+					if (*pontuacao % 10 == 0)
+					{
+						*nivel += 1;
+						if (*nivel == 6)
+						{
+							puts(MSG_WIN);
+							return 0;
+						}
+					}
+				}
+
+				else
+				puts(MSG_WRONG);
+				
+		   }
            /*The numbers are not ordered correctly*/
            if (i==3)
            {
@@ -224,6 +274,14 @@ int game(int * nivel, int * pontuacao, int * jogadas)
         }
         
     }
+	
+	if (*jogadas == 30)
+	{
+		puts(MSG_MAX);
+		print_status( *nivel, *pontuacao, *jogadas);
+		puts(MSG_OVER);
+		return 0;
+	}
     
 	return 0;
 }
@@ -255,11 +313,11 @@ void print_status(const int level, const int score, const int plays)
 /* print the option menu */
 void print_menu(void)
 {
-	puts("+------------------------------+");
+	puts("+-----------------------------+");
 	puts("| SORTIFY                      |");
 	puts("| p - next chalenge            |");
 	puts("| q - quit                     |");
 	puts("| m - print this information   |");
 	puts("| s - show your status         |");
-	puts("+------------------------------+");
+	puts("+-----------------------------+");
 }
