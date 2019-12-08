@@ -30,7 +30,7 @@ int main(int argc, char **argv)
 	puts(MSG_WELCOME);
 	print_menu();
 
-
+	/*Seed para gerar numeros aleatorios*/
 	if (argc > 1)
 	{
 		seed = atoi(argv[1]);
@@ -42,7 +42,7 @@ int main(int argc, char **argv)
 		srand(seed);
 	}
 	
-	
+	/*Ciclo que escolhe a opção do menu*/
 	do
     {
         scanf(" %c", &player_command);
@@ -70,7 +70,7 @@ int main(int argc, char **argv)
                 puts(MSG_UNKNOWN);
                 break;
         }
-        
+        /*Se o numero de jogadas for igual a 30 ou se o jogador chegar ao nivel 6 o jogo acaba*/
         if (plays == 30)
         {
             return 0;
@@ -92,8 +92,6 @@ int main(int argc, char **argv)
 int game(int * nivel, int * pontuacao, int * jogadas)
 {
 	int number, min, max;
-
-	/*prints */
 	puts(MSG_SORT);
 
 	/*defines the min and max value for the random function*/
